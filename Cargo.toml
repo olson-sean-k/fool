@@ -2,6 +2,14 @@
 name = "fool"
 version = "0.0.0"
 authors = ["Sean Olson <olson.sean.k@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/olson-sean-k/fool"
 description = "Traits for interoperation of Boolean and sum types."
+keywords = ["Boolean", "sum", "extension", "conversion"]
 
 [dependencies]
+
+[features]
+default = ["std"]
+std = []

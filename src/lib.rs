@@ -32,6 +32,13 @@
 //! let message = set.contains(&10u32).some_with(|| "Contains 10!".to_owned());
 //! ```
 
+#![no_std]
+
+#[allow(unused_imports)]
+#[cfg(feature = "std")]
+#[macro_use]
+extern crate std;
+
 pub trait BoolExt: Sized {
     fn option(self) -> Option<()>;
 
