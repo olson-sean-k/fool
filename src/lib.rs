@@ -40,6 +40,8 @@ extern crate std;
 pub trait BoolExt: Sized {
     fn option(self) -> Option<()>;
 
+    fn result(self) -> Result<(), ()>;
+
     fn some<T>(self, value: T) -> Option<T>;
 
     fn some_with<T, F>(self, f: F) -> Option<T>
@@ -60,6 +62,15 @@ impl BoolExt for bool {
         }
         else {
             None
+        }
+    }
+
+    fn result(self) -> Result<(), ()> {
+        if self {
+            Ok(())
+        }
+        else {
+            Err(())
         }
     }
 
