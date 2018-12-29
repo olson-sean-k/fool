@@ -1,6 +1,7 @@
 [package]
 name = "fool"
 version = "0.0.1"
+edition = "2018"
 authors = ["Sean Olson <olson.sean.k@gmail.com>"]
 license = "MIT"
 readme = "README.md"
