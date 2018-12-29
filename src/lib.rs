@@ -42,23 +42,38 @@ pub trait BoolExt: Sized {
 
     fn result(self) -> Result<(), ()>;
 
-    fn and<T>(self, option: Option<T>) -> Option<T>;
+    fn and<T>(self, option: Option<T>) -> Option<T> {
+        self.option().and(option)
+    }
 
     fn and_then<T, F>(self, f: F) -> Option<T>
     where
-        F: Fn() -> Option<T>;
+        F: Fn() -> Option<T>,
+    {
+        self.option().and_then(move |_| f())
+    }
 
-    fn some<T>(self, value: T) -> Option<T>;
+    fn some<T>(self, value: T) -> Option<T> {
+        self.option().map(move |_| value)
+    }
 
     fn some_with<T, F>(self, f: F) -> Option<T>
     where
-        F: Fn() -> T;
+        F: Fn() -> T,
+    {
+        self.option().map(move |_| f())
+    }
 
-    fn ok_or<E>(self, error: E) -> Result<(), E>;
+    fn ok_or<E>(self, error: E) -> Result<(), E> {
+        self.result().map_err(move |_| error)
+    }
 
     fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
     where
-        F: Fn() -> E;
+        F: Fn() -> E,
+    {
+        self.result().map_err(move |_| f())
+    }
 }
 
 impl BoolExt for bool {
@@ -77,69 +92,6 @@ impl BoolExt for bool {
         }
         else {
             Err(())
-        }
-    }
-
-    fn and<T>(self, option: Option<T>) -> Option<T> {
-        if self {
-            option
-        }
-        else {
-            None
-        }
-    }
-
-    fn and_then<T, F>(self, f: F) -> Option<T>
-    where
-        F: Fn() -> Option<T>,
-    {
-        if self {
-            f()
-        }
-        else {
-            None
-        }
-    }
-
-    fn some<T>(self, value: T) -> Option<T> {
-        if self {
-            Some(value)
-        }
-        else {
-            None
-        }
-    }
-
-    fn some_with<T, F>(self, f: F) -> Option<T>
-    where
-        F: Fn() -> T,
-    {
-        if self {
-            Some(f())
-        }
-        else {
-            None
-        }
-    }
-
-    fn ok_or<E>(self, error: E) -> Result<(), E> {
-        if self {
-            Ok(())
-        }
-        else {
-            Err(error)
-        }
-    }
-
-    fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
-    where
-        F: Fn() -> E,
-    {
-        if self {
-            Ok(())
-        }
-        else {
-            Err(f())
         }
     }
 }
