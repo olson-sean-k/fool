@@ -42,6 +42,12 @@ pub trait BoolExt: Sized {
 
     fn result(self) -> Result<(), ()>;
 
+    fn and<T>(self, option: Option<T>) -> Option<T>;
+
+    fn and_then<T, F>(self, f: F) -> Option<T>
+    where
+        F: Fn() -> Option<T>;
+
     fn some<T>(self, value: T) -> Option<T>;
 
     fn some_with<T, F>(self, f: F) -> Option<T>
@@ -71,6 +77,27 @@ impl BoolExt for bool {
         }
         else {
             Err(())
+        }
+    }
+
+    fn and<T>(self, option: Option<T>) -> Option<T> {
+        if self {
+            option
+        }
+        else {
+            None
+        }
+    }
+
+    fn and_then<T, F>(self, f: F) -> Option<T>
+    where
+        F: Fn() -> Option<T>,
+    {
+        if self {
+            f()
+        }
+        else {
+            None
         }
     }
 
