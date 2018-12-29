@@ -46,12 +46,11 @@ pub trait BoolExt: Sized {
     where
         F: Fn() -> T;
 
-    fn ok_or<T, E>(self, value: T, error: E) -> Result<T, E>;
+    fn ok_or<E>(self, error: E) -> Result<(), E>;
 
-    fn ok_or_else<F, G, T, E>(self, f: F, g: G) -> Result<T, E>
+    fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
     where
-        F: Fn() -> T,
-        G: Fn() -> E;
+        F: Fn() -> E;
 }
 
 impl BoolExt for bool {
@@ -85,25 +84,24 @@ impl BoolExt for bool {
         }
     }
 
-    fn ok_or<T, E>(self, value: T, error: E) -> Result<T, E> {
+    fn ok_or<E>(self, error: E) -> Result<(), E> {
         if self {
-            Ok(value)
+            Ok(())
         }
         else {
             Err(error)
         }
     }
 
-    fn ok_or_else<F, G, T, E>(self, f: F, g: G) -> Result<T, E>
+    fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
     where
-        F: Fn() -> T,
-        G: Fn() -> E,
+        F: Fn() -> E,
     {
         if self {
-            Ok(f())
+            Ok(())
         }
         else {
-            Err(g())
+            Err(f())
         }
     }
 }
