@@ -12,5 +12,5 @@ keywords = ["Boolean", "sum", "extension", "conversion"]
 [dependencies]
 
 [features]
-default = ["std"]
+default = []
 std = []
