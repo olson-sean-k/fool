@@ -58,6 +58,13 @@ pub trait BoolExt: Sized {
         self.into_option().and_then(move |_| f())
     }
 
+    fn map<T, F>(self, f: F) -> Option<T>
+    where
+        F: Fn() -> T,
+    {
+        self.into_option().map(|_| f())
+    }
+
     fn some<T>(self, value: T) -> Option<T> {
         self.into_option().map(move |_| value)
     }
