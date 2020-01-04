@@ -47,6 +47,8 @@ pub trait BoolExt: Sized {
 
     fn into_result(self) -> Result<(), ()>;
 
+    fn not(self) -> Self;
+
     fn and<T>(self, option: Option<T>) -> Option<T> {
         self.into_option().and(option)
     }
@@ -105,6 +107,10 @@ impl BoolExt for bool {
         else {
             Err(())
         }
+    }
+
+    fn not(self) -> Self {
+        !self
     }
 }
 
