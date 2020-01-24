@@ -21,7 +21,7 @@
 //! }
 //! ```
 //!
-//! Using `some_with` to produce an `Option` based on a Boolean expression:
+//! Using `map` to produce an `Option` based on a Boolean expression:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -30,10 +30,10 @@
 //! let mut set = HashSet::new();
 //! set.insert(10u32);
 //!
-//! let message = set.contains(&10u32).some_with(|| "Contains 10!".to_owned());
+//! let message = set.contains(&10u32).map(|| "Contains 10!".to_owned());
 //! ```
 //!
-//! Using `true_or_else` and `?` to return errors:
+//! Using `ok_or_else` and `?` to return errors:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -44,7 +44,7 @@
 //!
 //! impl Door {
 //!     pub fn close(&mut self) -> Result<(), ()> {
-//!         self.is_open().true_or_else(|| ())?;
+//!         self.is_open().ok_or_else(|| ())?;
 //!         self.is_open = false;
 //!         Ok(())
 //!     }
@@ -93,18 +93,11 @@ pub trait BoolExt: Sized {
         self.into_option().map(move |_| value)
     }
 
-    fn some_with<T, F>(self, f: F) -> Option<T>
-    where
-        F: Fn() -> T,
-    {
-        self.into_option().map(move |_| f())
-    }
-
-    fn true_or<E>(self, error: E) -> Result<(), E> {
+    fn ok_or<E>(self, error: E) -> Result<(), E> {
         self.into_result().map_err(move |_| error)
     }
 
-    fn true_or_else<E, F>(self, f: F) -> Result<(), E>
+    fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
     where
         F: Fn() -> E,
     {
