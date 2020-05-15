@@ -75,14 +75,14 @@ pub trait BoolExt: Sized {
 
     fn and_then<T, F>(self, f: F) -> Option<T>
     where
-        F: Fn() -> Option<T>,
+        F: FnOnce() -> Option<T>,
     {
         self.into_option().and_then(move |_| f())
     }
 
     fn map<T, F>(self, f: F) -> Option<T>
     where
-        F: Fn() -> T,
+        F: FnOnce() -> T,
     {
         self.into_option().map(|_| f())
     }
@@ -97,7 +97,7 @@ pub trait BoolExt: Sized {
 
     fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
     where
-        F: Fn() -> E,
+        F: FnOnce() -> E,
     {
         self.into_result().map_err(move |_| f())
     }
@@ -150,7 +150,7 @@ impl<'a, T> IntoBool for &'a mut Option<T> {
 pub trait ResultExt<T, E> {
     fn and_if<F>(self, f: F) -> Option<T>
     where
-        F: Fn(&T) -> bool;
+        F: FnOnce(&T) -> bool;
 }
 
 impl<T, E> IntoBool for Result<T, E> {
@@ -174,7 +174,7 @@ impl<'a, T, E> IntoBool for &'a mut Result<T, E> {
 impl<T, E> ResultExt<T, E> for Result<T, E> {
     fn and_if<F>(self, f: F) -> Option<T>
     where
-        F: Fn(&T) -> bool,
+        F: FnOnce(&T) -> bool,
     {
         match self {
             Ok(value) => {
