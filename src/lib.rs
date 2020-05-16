@@ -21,7 +21,7 @@
 //! }
 //! ```
 //!
-//! Using `map` to produce an `Option` based on a Boolean expression:
+//! Using `then` to produce an `Option` based on a Boolean expression:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -30,7 +30,7 @@
 //! let mut set = HashSet::new();
 //! set.insert(10u32);
 //!
-//! let message = set.contains(&10u32).map(|| "Contains 10!".to_owned());
+//! let message = set.contains(&10u32).then(|| "Contains 10!".to_owned());
 //! ```
 //!
 //! Using `ok_or_else` and `?` to return errors:
@@ -77,29 +77,29 @@ pub trait BoolExt: Sized {
     where
         F: FnOnce() -> Option<T>,
     {
-        self.into_option().and_then(move |_| f())
+        self.into_option().and_then(|_| f())
     }
 
-    fn map<T, F>(self, f: F) -> Option<T>
+    fn then<T, F>(self, f: F) -> Option<T>
     where
         F: FnOnce() -> T,
     {
         self.into_option().map(|_| f())
     }
 
-    fn some<T>(self, value: T) -> Option<T> {
-        self.into_option().map(move |_| value)
+    fn then_some<T>(self, value: T) -> Option<T> {
+        self.then(|| value)
     }
 
     fn ok_or<E>(self, error: E) -> Result<(), E> {
-        self.into_result().map_err(move |_| error)
+        self.into_result().map_err(|_| error)
     }
 
     fn ok_or_else<E, F>(self, f: F) -> Result<(), E>
     where
         F: FnOnce() -> E,
     {
-        self.into_result().map_err(move |_| f())
+        self.into_result().map_err(|_| f())
     }
 }
 
