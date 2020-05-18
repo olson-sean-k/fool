@@ -7,6 +7,16 @@ license = "MIT"
 readme = "README.md"
 repository = "https://github.com/olson-sean-k/fool"
 description = "Traits for interoperation of Boolean and sum types."
-keywords = ["Boolean", "sum", "extension", "conversion"]
+keywords = [
+    "boolean",
+    "conversion",
+    "extension",
+    "option",
+    "result"
+]
+categories = [
+    "no-std",
+    "rust-patterns"
+]
 
 [dependencies]
