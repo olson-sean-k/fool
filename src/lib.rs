@@ -5,7 +5,7 @@
 //!
 //! # Examples
 //!
-//! Using `and_if` to produce an `Option` from a `Result` if a predicate
+//! Using `ok_if` to produce an `Option` from a `Result` if a predicate
 //! succeeds:
 //!
 //! ```rust
@@ -16,7 +16,7 @@
 //!     # Err(())
 //! }
 //!
-//! if let Some(value) = try_get::<u32>().and_if(|value| *value > 10) {
+//! if let Some(value) = try_get::<u32>().ok_if(|value| *value > 10) {
 //!     // ...
 //! }
 //! ```
@@ -148,7 +148,7 @@ impl<'a, T> IntoBool for &'a mut Option<T> {
 }
 
 pub trait ResultExt<T, E> {
-    fn and_if<F>(self, f: F) -> Option<T>
+    fn ok_if<F>(self, f: F) -> Option<T>
     where
         F: FnOnce(&T) -> bool;
 }
@@ -172,21 +172,11 @@ impl<'a, T, E> IntoBool for &'a mut Result<T, E> {
 }
 
 impl<T, E> ResultExt<T, E> for Result<T, E> {
-    fn and_if<F>(self, f: F) -> Option<T>
+    fn ok_if<F>(self, f: F) -> Option<T>
     where
         F: FnOnce(&T) -> bool,
     {
-        match self {
-            Ok(value) => {
-                if f(&value) {
-                    Some(value)
-                }
-                else {
-                    None
-                }
-            }
-            _ => None,
-        }
+        self.ok().filter(f)
     }
 }
 
