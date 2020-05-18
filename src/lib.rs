@@ -1,25 +1,11 @@
-//! Traits for interoperation of Boolean and sum types.
+//! Traits for interoperation of `bool` and the `Option` and `Result` sum types.
 //!
-//! Fool provides extension traits for `bool`, `Option`, and `Result` types.
-//! These traits enable fluent conversions and expressions.
+//! Fool provides an extension trait for `bool` and a Boolean coercion trait for
+//! `Option` and `Result`. `BoolExt` enables fluent conversion from `bool` into
+//! `Option` and `Result` types. `IntoBool` enables compound Boolean predicates
+//! using `bool`, `Option`, and `Result` types with implicit conversion.
 //!
 //! # Examples
-//!
-//! Using `ok_if` to produce an `Option` from a `Result` if a predicate
-//! succeeds:
-//!
-//! ```rust
-//! use fool::ResultExt;
-//!
-//! pub fn try_get<T>() -> Result<T, ()> {
-//!     // ...
-//!     # Err(())
-//! }
-//!
-//! if let Some(value) = try_get::<u32>().ok_if(|value| *value > 10) {
-//!     // ...
-//! }
-//! ```
 //!
 //! Using `then` to produce an `Option` based on a Boolean expression:
 //!
@@ -147,12 +133,6 @@ impl<'a, T> IntoBool for &'a mut Option<T> {
     }
 }
 
-pub trait ResultExt<T, E> {
-    fn ok_if<F>(self, f: F) -> Option<T>
-    where
-        F: FnOnce(&T) -> bool;
-}
-
 impl<T, E> IntoBool for Result<T, E> {
     fn into_bool(self) -> bool {
         self.is_ok()
@@ -168,15 +148,6 @@ impl<'a, T, E> IntoBool for &'a Result<T, E> {
 impl<'a, T, E> IntoBool for &'a mut Result<T, E> {
     fn into_bool(self) -> bool {
         self.is_ok()
-    }
-}
-
-impl<T, E> ResultExt<T, E> for Result<T, E> {
-    fn ok_if<F>(self, f: F) -> Option<T>
-    where
-        F: FnOnce(&T) -> bool,
-    {
-        self.ok().filter(f)
     }
 }
 
@@ -220,10 +191,6 @@ macro_rules! xor {
     (option => $head:expr, $($tail:expr),*$(,)?) => (
         $head$(.xor($tail))*
     );
-}
-
-pub mod prelude {
-    pub use crate::{BoolExt, ResultExt};
 }
 
 #[cfg(test)]
