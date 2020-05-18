@@ -43,10 +43,6 @@
 
 #![no_std]
 
-pub trait IntoBool {
-    fn into_bool(self) -> bool;
-}
-
 pub trait BoolExt: Sized {
     fn into_option(self) -> Option<()>;
 
@@ -104,6 +100,10 @@ impl BoolExt for bool {
             Err(())
         }
     }
+}
+
+pub trait IntoBool {
+    fn into_bool(self) -> bool;
 }
 
 impl IntoBool for bool {
