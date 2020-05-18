@@ -5,6 +5,9 @@
 //! `Option` and `Result` types. `IntoBool` enables compound Boolean predicates
 //! using `bool`, `Option`, and `Result` types with implicit conversion.
 //!
+//! Please note that versions in the `0.0.*` series are experimental and
+//! unstable.
+//!
 //! # Examples
 //!
 //! Using `then` to produce an `Option` based on a Boolean expression:
