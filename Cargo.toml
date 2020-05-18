@@ -10,7 +10,3 @@ description = "Traits for interoperation of Boolean and sum types."
 keywords = ["Boolean", "sum", "extension", "conversion"]
 
 [dependencies]
-
-[features]
-default = []
-std = []

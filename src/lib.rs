@@ -43,9 +43,6 @@
 
 #![no_std]
 
-#[cfg(feature = "std")]
-extern crate std;
-
 pub trait IntoBool {
     fn into_bool(self) -> bool;
 }
