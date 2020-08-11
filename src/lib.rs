@@ -46,6 +46,11 @@
 
 #![no_std]
 
+mod zip;
+
+#[cfg(feature = "zip")]
+use zip::Zip;
+
 pub trait BoolExt: Sized {
     fn into_option(self) -> Option<()>;
 
@@ -149,6 +154,30 @@ impl<'a, T, E> IntoBool for &'a mut Result<T, E> {
     fn into_bool(self) -> bool {
         self.is_ok()
     }
+}
+
+pub trait OptionExt<T>: Sized {
+    #[cfg(feature = "zip")]
+    fn zip<U>(self, other: Option<U>) -> Option<(T, U)>;
+}
+
+impl<T> OptionExt<T> for Option<T> {
+    #[cfg(feature = "zip")]
+    fn zip<U>(self, other: Option<U>) -> Option<(T, U)> {
+        // Avoid the complexity of the `Zip` trait and match on the `Option`s.
+        match (self, other) {
+            (Some(a), Some(b)) => Some((a, b)),
+            _ => None,
+        }
+    }
+}
+
+#[cfg(feature = "zip")]
+pub fn zip<U>(tuple: U) -> U::Output
+where
+    U: Zip,
+{
+    Zip::zip(tuple)
 }
 
 #[macro_export]
@@ -281,5 +310,20 @@ mod tests {
         assert!(xor!(option => some(), none(), none()).is_some());
         assert!(xor!(option => some(), some(), none()).is_none());
         assert!(xor!(option => none(), none(), none()).is_none());
+    }
+
+    #[cfg(feature = "zip")]
+    #[test]
+    fn zip_option() {
+        use crate::OptionExt;
+
+        let a = Some(0i32);
+        let b = Some(1i32);
+        let c = Some(2i32);
+        let d: Option<i32> = None;
+
+        assert_eq!(Some((0, 1, 2)), crate::zip((a, b, c)));
+        assert_eq!(None, crate::zip((a, b, c, d)));
+        assert_eq!(Some((0, 1)), OptionExt::zip(a, b));
     }
 }
