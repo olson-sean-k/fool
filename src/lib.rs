@@ -1,17 +1,39 @@
-//! Traits for interoperation of `bool` and the `Option` and `Result` sum types.
+//! Traits for interoperation of `bool` and the [`Option`] and [`Result`] sum
+//! types.
 //!
-//! Fool provides an extension trait for `bool` and a Boolean coercion trait for
-//! `Option` and `Result`. `BoolExt` enables fluent conversion from `bool` into
-//! `Option` and `Result` types. `IntoBool` enables compound Boolean predicates
-//! using `bool`, `Option`, and `Result` types with implicit conversion.
+//! Fool provides extension traits for `bool` and sum types as well as a Boolean
+//! coercion trait for [`Option`] and [`Result`]. [`BoolExt`] enables fluent
+//! conversion from `bool` into sum types. [`IntoBool`] enables compound Boolean
+//! predicates using `bool`, [`Option`], and [`Result`] types with implicit
+//! conversion.
 //!
-//! Please note that versions in the `0.0.*` series are experimental and
-//! unstable.
+//! Versions in the `0.0.*` series are experimental and unstable.
+//!
+//! # Generalized Zipping
+//!
+//! In Rust 1.46, the [`Option::zip`] API was stabilized. Fool provides
+//! [`OptionExt::zip_ext`] for prior versions of Rust as well as a generalized
+//! `zip` function when the `zip` feature is enabled. The `zip` function accepts
+//! a tuple of up to six [`Option`]s and collapses them into a single [`Option`]
+//! if all of the inputs are `Some`.
+//!
+//! # Collisions with Proposed `core` and `std` APIs
+//!
+//! Some extension methods in [`BoolExt`] and [`OptionExt`] mirror unstable APIs
+//! and APIs added to `core` and `std` in subsequent releases of Rust. Fool
+//! avoids collisions with these APIs using a `_ext` postfix, but the bare names
+//! of these APIs can be included with the `bare` feature.
+//!
+//! Use of bare extension methods can cause errors after upgrading to a Rust
+//! toolchain that includes these APIs, because the invocation may become
+//! ambiguous. For example, [`BoolExt::then_some_ext`] mirrors
+//! `bool::then_some`, which has not yet become a stable API at the time of this
+//! writing.
 //!
 //! # Examples
 //!
-//! Using `then_ext` (or `then` with the `bare` feature flag) to produce an
-//! `Option` based on a Boolean expression:
+//! Using [`then_ext`][`BoolExt::then_ext`] (or `then` with the `bare` feature
+//! flag) to create an [`Option`] from a Boolean expression:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -23,7 +45,8 @@
 //! let message = set.contains(&10u32).then_ext(|| "Contains 10!".to_owned());
 //! ```
 //!
-//! Using `ok_or_else` and the try operator `?` to return errors:
+//! Using [`ok_or_else`][`BoolExt::ok_or_else`] and the try operator `?` to
+//! return errors:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -44,6 +67,14 @@
 //!     }
 //! }
 //! ```
+//!
+//! [`Option`]: core::option::Option
+//! [`Result`]: core::result::Result
+//! [`BoolExt`]: crate::BoolExt
+//! [`BoolExt::then_ext`]: crate::BoolExt::then_ext
+//! [`BoolExt::then_some_ext`]: crate::BoolExt::then_some_ext
+//! [`OptionExt`]: crate::OptionExt
+//! [`OptionExt::zip_ext`]: crate::OptionExt::zip_ext
 
 #![no_std]
 
