@@ -157,12 +157,10 @@ impl<'a, T, E> IntoBool for &'a mut Result<T, E> {
 }
 
 pub trait OptionExt<T>: Sized {
-    #[cfg(feature = "zip")]
     fn zip<U>(self, other: Option<U>) -> Option<(T, U)>;
 }
 
 impl<T> OptionExt<T> for Option<T> {
-    #[cfg(feature = "zip")]
     fn zip<U>(self, other: Option<U>) -> Option<(T, U)> {
         // Avoid the complexity of the `Zip` trait and match on the `Option`s.
         match (self, other) {
