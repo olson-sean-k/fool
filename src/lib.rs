@@ -10,7 +10,8 @@
 //!
 //! # Examples
 //!
-//! Using `then` to produce an `Option` based on a Boolean expression:
+//! Using `then_ext` (or `then` with the `bare` feature flag) to produce an
+//! `Option` based on a Boolean expression:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -19,10 +20,10 @@
 //! let mut set = HashSet::new();
 //! set.insert(10u32);
 //!
-//! let message = set.contains(&10u32).then(|| "Contains 10!".to_owned());
+//! let message = set.contains(&10u32).then_ext(|| "Contains 10!".to_owned());
 //! ```
 //!
-//! Using `ok_or_else` and `?` to return errors:
+//! Using `ok_or_else` and the try operator `?` to return errors:
 //!
 //! ```rust
 //! use fool::BoolExt;
@@ -67,15 +68,28 @@ pub trait BoolExt: Sized {
         self.into_option().and_then(|_| f())
     }
 
+    #[cfg(feature = "bare")]
     fn then<T, F>(self, f: F) -> Option<T>
+    where
+        F: FnOnce() -> T,
+    {
+        self.then_ext(f)
+    }
+
+    fn then_ext<T, F>(self, f: F) -> Option<T>
     where
         F: FnOnce() -> T,
     {
         self.into_option().map(|_| f())
     }
 
+    #[cfg(feature = "bare")]
     fn then_some<T>(self, value: T) -> Option<T> {
-        self.then(|| value)
+        self.then_some_ext(value)
+    }
+
+    fn then_some_ext<T>(self, value: T) -> Option<T> {
+        self.then_ext(|| value)
     }
 
     fn ok_or<E>(self, error: E) -> Result<(), E> {
@@ -157,11 +171,16 @@ impl<'a, T, E> IntoBool for &'a mut Result<T, E> {
 }
 
 pub trait OptionExt<T>: Sized {
-    fn zip<U>(self, other: Option<U>) -> Option<(T, U)>;
+    #[cfg(feature = "bare")]
+    fn zip<U>(self, other: Option<U>) -> Option<(T, U)> {
+        self.zip_ext(other)
+    }
+
+    fn zip_ext<U>(self, other: Option<U>) -> Option<(T, U)>;
 }
 
 impl<T> OptionExt<T> for Option<T> {
-    fn zip<U>(self, other: Option<U>) -> Option<(T, U)> {
+    fn zip_ext<U>(self, other: Option<U>) -> Option<(T, U)> {
         // Avoid the complexity of the `Zip` trait and match on the `Option`s.
         match (self, other) {
             (Some(a), Some(b)) => Some((a, b)),
