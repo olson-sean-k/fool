@@ -2,6 +2,6 @@
 `Result` sum types. Fool also provides macros for Boolean combinations of
 `bool`, `Option`, and `Result` types and does not require `std`.
 
-[![CI](https://github.com/olson-sean-k/fool/workflows/CI/badge.svg)](https://github.com/olson-sean-k/fool/actions)
-[![Documentation](https://docs.rs/fool/badge.svg)](https://docs.rs/fool)
-[![Crate](https://img.shields.io/crates/v/fool.svg)](https://crates.io/crates/fool)
+[![GitHub](https://img.shields.io/badge/GitHub-olson--sean--k/fool-8da0cb?logo=github&style=for-the-badge)](https://github.com/olson-sean-k/fool)
+[![docs.rs](https://img.shields.io/badge/docs.rs-fool-66c2a5?logo=rust&style=for-the-badge)](https://docs.rs/fool)
+[![crates.io](https://img.shields.io/crates/v/fool.svg?logo=rust&style=for-the-badge)](https://crates.io/crates/fool)
